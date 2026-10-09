@@ -2,6 +2,7 @@
 
 #include "InputManager.h"
 #include "MenuHost.h"
+#include "MenuApi.h"
 #include "backends/imgui_impl_dx11.h"
 #include "backends/imgui_impl_win32.h"
 #include "imgui_internal.h"
@@ -114,6 +115,7 @@ void Menu::NotifyWindowShutdown() {
   lastAppliedSmoothScrollY_ = 0.0f;
   FocusedConditionEditorWindowSlot() = 0;
   enabled_ = false;
+  api::SetMenuOpenState(false);
 }
 
 void Menu::OnMenuShow() {
@@ -148,6 +150,7 @@ void Menu::OnMenuShow() {
   ApplyInitialWorkbenchFilterSelection();
   SyncWorkbenchRowsForCurrentFilter();
   enabled_ = true;
+  api::SetMenuOpenState(true);
 }
 
 void Menu::OnMenuHide() {
@@ -187,6 +190,7 @@ void Menu::OnMenuHide() {
   }
   SaveUserSettings();
   enabled_ = false;
+  api::SetMenuOpenState(false);
 }
 
 void Menu::HandleCancel() {

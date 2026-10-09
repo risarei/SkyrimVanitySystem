@@ -6,11 +6,18 @@
 #include "integrations/DynamicArmorVariantsExtendedClient.h"
 #include "ui/ConditionParamOptionCache.h"
 #include "ui/Menu.h"
+#include "ui/MenuApi.h"
+
+SKSEPluginInfo(.Version = Plugin::VERSION,
+               .Name = Plugin::NAME,
+               .Author = Plugin::AUTHOR,
+               .RuntimeCompatibility = SKSE::VersionIndependence::AddressLibrary)
 
 static void SKSEMessageHandler(SKSE::MessagingInterface::Message *a_message) {
   switch (a_message->type) {
   case SKSE::MessagingInterface::kDataLoaded:
     sosr::Menu::GetSingleton()->SetGameDataLoaded(true);
+    sosr::api::SetGameDataLoaded(true);
     break;
   case SKSE::MessagingInterface::kPostPostLoad:
     sosr::integrations::DynamicArmorVariantsExtendedClient::Refresh();
@@ -25,7 +32,7 @@ static void SKSEMessageHandler(SKSE::MessagingInterface::Message *a_message) {
   }
 }
 
-extern "C" DLLEXPORT bool SKSEAPI
+extern "C" DLLEXPORT bool
 SKSEPlugin_Load(const SKSE::LoadInterface *a_skse) {
   REL::Module::reset();
 

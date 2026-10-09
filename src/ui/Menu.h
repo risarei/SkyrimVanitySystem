@@ -62,6 +62,7 @@ public:
   [[nodiscard]] bool QueueSmoothScroll(float a_deltaY);
   [[nodiscard]] std::string GetToggleKeyLabel() const;
   [[nodiscard]] std::uint32_t GetToggleKey() const { return toggleKey_; }
+  void SetNativeHotkey(std::uint32_t a_scanCode);
   [[nodiscard]] std::uint32_t GetToggleModifier() const {
     return toggleModifier_;
   }

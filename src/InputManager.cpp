@@ -3,6 +3,7 @@
 #include "Keycode.h"
 #include "imgui.h"
 #include "ui/InputSinkBridge.h"
+#include "ui/MenuApi.h"
 
 #include <memory>
 
@@ -156,7 +157,7 @@ void InputManager::ProcessInputEvents() {
           toggleKeyDown_ = keyIsDown;
         }
 
-        if (!inputSinkState.wantsTextInput &&
+        if (api::NativeHotkeyEnabled() && !inputSinkState.wantsTextInput &&
             scanCode == inputSinkState.toggleKey && IsBoundModifierDown() &&
             toggleKeyWentDown) {
           ui::ToggleInputSinkVisibility();

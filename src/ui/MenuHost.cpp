@@ -3,23 +3,6 @@
 #include "Hooks.h"
 #include "Menu.h"
 
-namespace RE {
-class GFxCharEvent : public RE::GFxEvent {
-public:
-  GFxCharEvent() = default;
-
-  explicit GFxCharEvent(std::uint32_t a_wcharCode,
-                        std::uint8_t a_keyboardIndex = 0)
-      : GFxEvent(EventType::kCharEvent), wcharCode(a_wcharCode),
-        keyboardIndex(a_keyboardIndex) {}
-
-  std::uint32_t wcharCode{};
-  std::uint32_t keyboardIndex{};
-};
-
-static_assert(sizeof(GFxCharEvent) == 0x0C);
-} // namespace RE
-
 namespace {
 [[nodiscard]] bool IsTextInputCharacter(const std::uint32_t a_codePoint) {
   return a_codePoint >= 0x20U && a_codePoint != 0x7FU;
@@ -114,8 +97,8 @@ void OnKeyEvent(const RE::GFxEvent *a_event, bool a_down) {
 void OnCharEvent(const RE::GFxEvent *a_event) {
   const auto *charEvent = reinterpret_cast<const RE::GFxCharEvent *>(a_event);
   auto &io = ImGui::GetIO();
-  if (io.WantTextInput && IsTextInputCharacter(charEvent->wcharCode)) {
-    io.AddInputCharacter(charEvent->wcharCode);
+  if (io.WantTextInput && IsTextInputCharacter(charEvent->wCharCode)) {
+    io.AddInputCharacter(charEvent->wCharCode);
   }
 }
 

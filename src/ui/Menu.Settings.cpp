@@ -2,6 +2,7 @@
 
 #include "Keycode.h"
 #include "ThemeConfig.h"
+#include "MenuApi.h"
 #include "ui/Localization.h"
 #include "backends/imgui_impl_dx11.h"
 #include "backends/imgui_impl_win32.h"
@@ -253,6 +254,7 @@ void Menu::HandleToggleKeyCapture(const std::uint32_t a_scanCode,
     toggleKey_ = 0x40;
     toggleModifier_ = 0;
     SaveUserSettings();
+    api::SetObservedHotkey(toggleKey_);
     CloseToggleKeyCapture();
     return;
   }
@@ -267,7 +269,22 @@ void Menu::HandleToggleKeyCapture(const std::uint32_t a_scanCode,
   toggleKey_ = a_scanCode;
   toggleModifier_ = a_modifierScanCode;
   SaveUserSettings();
+  api::SetObservedHotkey(toggleKey_);
   CloseToggleKeyCapture();
+}
+
+void Menu::SetNativeHotkey(const std::uint32_t a_scanCode) {
+  if (!keycode::IsValidHotkey(a_scanCode) ||
+      keycode::IsKeyModifier(a_scanCode)) {
+    return;
+  }
+  if (toggleKey_ == a_scanCode && toggleModifier_ == 0) {
+    return;
+  }
+  toggleKey_ = a_scanCode;
+  toggleModifier_ = 0;
+  SaveUserSettings();
+  api::SetObservedHotkey(toggleKey_);
 }
 
 std::string Menu::GetToggleKeyLabel() const {
@@ -333,6 +350,7 @@ void Menu::Init(IDXGISwapChain *a_swapChain, ID3D11Device *a_device,
   ThemeConfig::GetSingleton()->Load(themeName_);
   ApplyStyle();
   initialized_ = true;
+  api::MarkReady(toggleKey_);
 
   logger::info("Initialized Dear ImGui menu");
 }
